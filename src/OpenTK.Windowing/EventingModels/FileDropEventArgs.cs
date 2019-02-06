@@ -12,7 +12,8 @@ using System;
 namespace OpenToolkit.Windowing.EventingModels
 {
     /// <summary>
-    /// Defines the event data for <see cref="NativeWindow" /> events.
+    /// Defines the arguments for file drop events.
+    /// This event is generated when a file is dragged and dropped onto the window.
     /// </summary>
     public class FileDropEventArgs : EventArgs
     {

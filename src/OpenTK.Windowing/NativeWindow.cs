@@ -35,7 +35,7 @@ namespace OpenToolkit.Windowing
                     glfw.SetWindowTitle(windowPtr, value);
                 }
 
-                TitleChanged.Invoke(this, EventArgs.Empty);
+                TitleChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -67,7 +67,8 @@ namespace OpenToolkit.Windowing
                 {
                     unsafe { glfw.HideWindow(windowPtr); }
                 }
-                VisibleChanged.Invoke(this, EventArgs.Empty);
+
+                VisibleChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -132,7 +133,7 @@ namespace OpenToolkit.Windowing
                     }
                 }
 
-                WindowStateChanged.Invoke(this, EventArgs.Empty);
+                WindowStateChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -163,10 +164,7 @@ namespace OpenToolkit.Windowing
 
         public Rectangle Bounds
         {
-            get
-            {
-                return new Rectangle(Location, Size);
-            }
+            get => new Rectangle(Location, Size);
             set
             {
                 unsafe
@@ -201,26 +199,26 @@ namespace OpenToolkit.Windowing
 
         public int X
         {
-            get { return Location.X; }
-            set { Location = new Point(value, Location.Y); }
+            get => Location.X;
+            set => Location = new Point(value, Location.Y);
         }
 
         public int Y
         {
-            get { return Location.Y; }
-            set { Location = new Point(Location.X, value); }
+            get => Location.Y;
+            set => Location = new Point(Location.X, value);
         }
 
         public int Width
         {
-            get { return Size.Width; }
-            set { Size = new Size(value, Size.Height); }
+            get => Size.Width;
+            set => Size = new Size(value, Size.Height);
         }
 
         public int Height
         {
-            get { return Size.Height; }
-            set { Size = new Size(Size.Width, value); }
+            get => Size.Height;
+            set => Size = new Size(Size.Width, value);
         }
 
         public Rectangle ClientRectangle
@@ -239,18 +237,15 @@ namespace OpenToolkit.Windowing
             }
             set => throw new NotImplementedException();
         }
-
+        
         public MouseCursor Cursor
         {
-            get
-            {
-                throw new NotImplementedException();
-
-            }
+            get => throw new NotImplementedException();
             set => throw new NotImplementedException();
         }
 
         private bool _cursorHidden;
+        
         public bool CursorVisible
         {
             get
@@ -298,8 +293,7 @@ namespace OpenToolkit.Windowing
                 }
             }
         }
-
-
+        
         public NativeWindow(int width = 640, int height = 480, string title = "", bool windowedFullscreen = false)
         {
             _title = title;
@@ -322,57 +316,57 @@ namespace OpenToolkit.Windowing
                 }
 
                 RegisterWindowCallbacks();
-                Load.Invoke(this, EventArgs.Empty);
+                Load?.Invoke(this, EventArgs.Empty);
             }
         }
-
+        
         private void RegisterWindowCallbacks()
         {
             unsafe
             {
-                glfw.SetWindowPosCallback(windowPtr, (window, x, y) => Move.Invoke(this, EventArgs.Empty));
-                glfw.SetWindowSizeCallback(windowPtr, (width, height) => Resize.Invoke(this, EventArgs.Empty));
-                glfw.SetWindowCloseCallback(windowPtr, (window) => Closing.Invoke(this, new CancelEventArgs()));
-                glfw.SetWindowIconifyCallback(windowPtr, (window, iconified) => IconChanged.Invoke(this, EventArgs.Empty));
-                glfw.SetWindowFocusCallback(windowPtr, (window, focused) => FocusedChanged.Invoke(this, EventArgs.Empty));
-                glfw.SetCharCallback(windowPtr, (window, codepoint) => KeyPress.Invoke(this, new KeyPressEventArgs((char)codepoint)));
+                glfw.SetWindowPosCallback(windowPtr, (window, x, y) => Move?.Invoke(this, EventArgs.Empty));
+                glfw.SetWindowSizeCallback(windowPtr, (width, height) => Resize?.Invoke(this, EventArgs.Empty));
+                glfw.SetWindowCloseCallback(windowPtr, (window) => Closing?.Invoke(this, new CancelEventArgs()));
+                glfw.SetWindowIconifyCallback(windowPtr, (window, iconified) => IconChanged?.Invoke(this, EventArgs.Empty));
+                glfw.SetWindowFocusCallback(windowPtr, (window, focused) => FocusedChanged?.Invoke(this, EventArgs.Empty));
+                glfw.SetCharCallback(windowPtr, (window, codepoint) => KeyPress?.Invoke(this, new KeyPressEventArgs((char)codepoint)));
                 glfw.SetKeyCallback(windowPtr, (window, key, scancode, action, mods) =>
                 {
                     if (action == InputAction.Press)
                     {
-                        KeyDown.Invoke(this, new KeyboardKeyEventArgs());
+                        KeyDown?.Invoke(this, new KeyboardKeyEventArgs());
                     }
                     else if (action == InputAction.Release)
                     {
-                        KeyUp.Invoke(this, new KeyboardKeyEventArgs());
+                        KeyUp?.Invoke(this, new KeyboardKeyEventArgs());
                     }
                 });
                 glfw.SetCursorEnterCallback(windowPtr, (window, entered) =>
                 {
                     if (entered)
                     {
-                        MouseEnter.Invoke(this, EventArgs.Empty);
+                        MouseEnter?.Invoke(this, EventArgs.Empty);
                     }
                     else
                     {
-                        MouseLeave.Invoke(this, EventArgs.Empty);
+                        MouseLeave?.Invoke(this, EventArgs.Empty);
                     }
                 });
                 glfw.SetMouseButtonCallback(windowPtr, (window, button, action, mods) =>
                 {
                     if (action == InputAction.Press)
                     {
-                        MouseDown.Invoke(this, new MouseButtonEventArgs());
+                        MouseDown?.Invoke(this, new MouseButtonEventArgs());
                     }
                     else if (action == InputAction.Release)
                     {
-                        MouseUp.Invoke(this, new MouseButtonEventArgs());
+                        MouseUp?.Invoke(this, new MouseButtonEventArgs());
                     }
 
                 });
-                glfw.SetCursorPosCallback(windowPtr, (window, xpos, ypos) => MouseMove.Invoke(this, new MouseMoveEventArgs()));
-                glfw.SetScrollCallback(windowPtr, (window, xOffset, yOffset) => MouseWheel.Invoke(this, new MouseWheelEventArgs()));
-                glfw.SetDropCallback(windowPtr, (window, count, paths) => FileDrop.Invoke(this, new FileDropEventArgs()));
+                glfw.SetCursorPosCallback(windowPtr, (window, xpos, ypos) => MouseMove?.Invoke(this, new MouseMoveEventArgs()));
+                glfw.SetScrollCallback(windowPtr, (window, xOffset, yOffset) => MouseWheel?.Invoke(this, new MouseWheelEventArgs()));
+                glfw.SetDropCallback(windowPtr, (window, count, paths) => FileDrop?.Invoke(this, new FileDropEventArgs()));
 
                 //TODO: Events from GLFW the 'legacy' NativeWindow didnt have events for.
                 glfw.SetCharModsCallback(windowPtr, (window, codepoint, mods) => throw new NotImplementedException());
@@ -426,7 +420,7 @@ namespace OpenToolkit.Windowing
         {
             if (!disposedValue)
             {
-                Unload.Invoke(this, EventArgs.Empty);
+                Unload?.Invoke(this, EventArgs.Empty);
                 if (disposing)
                 {
                     // Free managed resources
@@ -438,12 +432,12 @@ namespace OpenToolkit.Windowing
                     if (windowPtr != null)
                     {
                         glfw.DestroyWindow(windowPtr);
-                        Closed.Invoke(this, EventArgs.Empty);
+                        Closed?.Invoke(this, EventArgs.Empty);
                     }
                 }
 
                 disposedValue = true;
-                Disposed.Invoke(this, EventArgs.Empty);
+                Disposed?.Invoke(this, EventArgs.Empty);
             }
         }
 
